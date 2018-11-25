@@ -1,0 +1,66 @@
+Sub StockMarketData()
+
+Dim ws As Worksheet
+Dim ticker As String
+Dim ticker_volume  As Double
+    ticker_volume = 0
+Dim summary_table_row As Integer
+    summary_table_row = 2
+Dim WS_Count As Integer
+    WS_Count = ActiveWorkbook.Sheets.Count
+Dim lastrow_ticker As Long
+    
+Dim TotalRange As Range
+Dim rw As Range
+Dim var_ticker As String
+Dim var_counter_balance As Integer
+Dim var_close As Double
+Dim var_open As Double
+var_counter_balance = 1
+Dim var_volume As Long
+Dim var_agg_volume As Long
+Dim var_counter_volume As Double
+
+'Set wb = ThisWorkbook
+'Set ws = wb.Sheets("MarketData")
+For Each sh In ThisWorkbook.Sheets
+    sh.Activate
+    Set TotalRange = sh.UsedRange
+    Set TotalRange = TotalRange.Offset(1, 0).Resize(TotalRange.Rows.Count - 1, TotalRange.Columns.Count)
+    For Each rw In TotalRange.Rows
+        If Cells(rw.Row, 1) <> Cells(rw.Row + 1, 1) Then
+          
+          var_close = Cells(rw.Row, 6).Value
+          var_counter_balance = var_counter_balance + 1
+          Cells(var_counter_balance, "I").Value = var_ticker
+          Cells(var_counter_balance, "J").Value = var_close - var_open
+          
+        End If
+        
+        If Cells(rw.Row, 1) <> var_ticker Then
+          
+          var_open = Cells(rw.Row, 3).Value
+          var_ticker = Cells(rw.Row, 1).Value
+        End If
+        
+        If Cells(rw.Row, 1) <> Cells(rw.Row + 1, 1) Then
+        
+        var_volume = Cells(rw.Row, 7).Value
+        var_counter_volume = var_counter_volume + 1
+        Cells(var_counter_balance, "L").Value = var_agg_volume + var_volume
+
+        End If
+        
+        If Cells(rw.Row, 1) <> var_ticker Then
+          
+          var_volume = Cells(rw.Row, 7).Value
+          var_ticker = Cells(rw.Row, 1).Value
+        
+        End If
+            
+    Next rw
+    var_counter_balance = 1
+    var_ticker = ""
+Next sh
+
+End Sub
